@@ -34,7 +34,7 @@ jobs:
       - name: Build release zip
         run: |
           mkdir -p dist/webmention-sender
-          cp webmention-sender.php config.example.php README.md LICENSE dist/webmention-sender/
+          cp webmention-sender.php webmention-cron.php config.example.php README.md LICENSE dist/webmention-sender/
           cp -r src dist/webmention-sender/src
           cd dist
           zip -r ../webmention-sender-v${VERSION}.zip webmention-sender/
