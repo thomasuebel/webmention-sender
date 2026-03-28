@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- `webmention-cron.php` HTTP entry point for hosts that only support HTTP-based cron jobs
+- `Config::cronToken` optional secret token for HTTP cron authentication; `null` disables HTTP access entirely
+
 ## v1.0.0 - 2026-03-28
 
 ### Added
