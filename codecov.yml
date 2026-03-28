@@ -1,0 +1,15 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto       # must stay at or above the current base coverage
+        threshold: 1%      # allow up to 1% drop before failing
+    patch:
+      default:
+        target: auto
+        threshold: 5%      # new code in the PR must be at least 5% below overall rate
+
+comment:
+  layout: "header,diff,files"
+  behavior: default        # post once, update on new commits
+  require_changes: true    # only comment if coverage changed
