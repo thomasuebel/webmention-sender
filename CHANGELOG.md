@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## v1.0.1 - 2026-03-28
 
 ### Added
 - `webmention-cron.php` HTTP entry point for hosts that only support HTTP-based cron jobs
