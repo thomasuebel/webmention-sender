@@ -108,7 +108,7 @@ final class WebmentionRunnerTest extends TestCase
         return new WebmentionRunner(
             new Config(
                 feedUrl:      'https://source.com/index.xml',
-                stateFile:    '/tmp/test-state.json',
+                stateFile:    sys_get_temp_dir() . '/test-state.json',
                 lookbackDays: $lookbackDays,
             ),
             $this->parser,
