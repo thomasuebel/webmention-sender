@@ -38,6 +38,12 @@ final class Config
 
         /** When true, emits debug-level log lines. */
         public readonly bool $verbose = false,
+
+        /**
+         * Secret token required to trigger a run via HTTP (webmention-cron.php).
+         * Leave null to disable HTTP access entirely.
+         */
+        public readonly ?string $cronToken = null,
     ) {
         if ($this->feedUrl === '' || !str_starts_with($this->feedUrl, 'http')) {
             throw new InvalidArgumentException('feedUrl must be a non-empty HTTP or HTTPS URL.');
@@ -57,6 +63,10 @@ final class Config
 
         if ($this->lookbackDays !== null && $this->lookbackDays < 1) {
             throw new InvalidArgumentException('lookbackDays must be a positive integer or null.');
+        }
+
+        if ($this->cronToken !== null && $this->cronToken === '') {
+            throw new InvalidArgumentException('cronToken must not be an empty string; set it to null to disable HTTP access.');
         }
     }
 }

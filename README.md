@@ -47,11 +47,43 @@ That's it. The state file is created automatically on first run.
 
 ## Usage
 
-### Cron
+### Cron (CLI)
 
 ```
 0 8 * * * php /path/to/webmention-sender.php >> /path/to/webmention-sender.log 2>&1
 ```
+
+### Cron (HTTP)
+
+For hosts that only support HTTP-based cron jobs, copy `webmention-cron.php` into your webroot:
+
+```sh
+cp webmention-cron.php /path/to/webroot/webmention-cron.php
+```
+
+Generate a secret token and add it to `config.php`:
+
+```sh
+php -r "echo bin2hex(random_bytes(32));"
+```
+
+```php
+return new Config(
+    feedUrl:    'https://your-blog.com/index.xml',
+    stateFile:  __DIR__ . '/webmentions-sent.json',
+    cronToken:  'your-generated-token',
+);
+```
+
+If `SENDER_DIR` in `webmention-cron.php` does not resolve correctly for your layout, adjust the constant at the top of the file.
+
+Then point your cron service at:
+
+```
+https://your-blog.com/webmention-cron.php?token=<your-token>
+```
+
+Or pass the token as an `Authorization` header to keep it out of server logs.
 
 ### Dry run
 
@@ -69,6 +101,7 @@ Set `dryRun: true` in `config.php` to discover endpoints and log what would be s
 | `lookbackDays`   | `?int`    | `null`                   | Only process posts published within this many days; `null` processes all    |
 | `dryRun`         | `bool`    | `false`                  | Log intended actions without sending                                        |
 | `verbose`        | `bool`    | `false`                  | Emit debug-level log output                                                 |
+| `cronToken`      | `?string` | `null`                   | Secret token for HTTP cron access; `null` disables HTTP access entirely     |
 
 ## Tests
 

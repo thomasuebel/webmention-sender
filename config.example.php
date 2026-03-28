@@ -16,4 +16,8 @@ return new Config(
     lookbackDays:   30,     // set to null to process all posts on every run
     dryRun:         false,
     verbose:        true,
+
+    // Required for HTTP cron (webmention-cron.php). Generate with:
+    // php -r "echo bin2hex(random_bytes(32));"
+    // cronToken:   'your-secret-token-here',
 );
