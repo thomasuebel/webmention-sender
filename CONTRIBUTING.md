@@ -31,6 +31,7 @@ vendor/bin/phpunit
 
 ```
 webmention-sender.php       Entry point — CLI guard, PSR-4 autoloader, bootstrap
+webmention-cron.php         HTTP entry point — copy to webroot for HTTP-only cron hosts
 config.example.php          Copy to config.php and fill in values
 src/
   Config.php                Value object with validation; all configuration lives here

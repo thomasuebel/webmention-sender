@@ -13,14 +13,22 @@ A CLI PHP tool that:
 
 It is designed to run on shared hosting via cron with no runtime dependencies beyond a standard PHP 8.2+ installation.
 
-## Entry point and bootstrap
+## Entry points and bootstrap
 
-`webmention-sender.php` is the only executable. It:
+`webmention-sender.php` is the CLI executable. It:
 - Guards against non-CLI invocation (`PHP_SAPI !== 'cli'`)
 - Registers a custom PSR-4 autoloader (no Composer at runtime)
 - Loads `config.php` (user-created from `config.example.php`)
 - Wires all services together via constructor injection
 - Delegates to `WebmentionRunner`
+
+`webmention-cron.php` is the HTTP entry point for hosts that only support HTTP-based cron. It is meant to be copied into the webroot. It:
+- Validates `SENDER_DIR` (configurable constant at the top of the file)
+- Registers the same PSR-4 autoloader pointing into `SENDER_DIR/src/`
+- Loads `config.php` from `SENDER_DIR`
+- Authenticates via `Config::$cronToken` — checks `Authorization` header then `?token=` query param using `hash_equals()`; returns 404 if `cronToken` is null, 403 on mismatch
+- Wires and runs the same service graph as `webmention-sender.php`
+- Logs errors via `error_log()` (server error log) rather than STDERR
 
 ## Class map
 
