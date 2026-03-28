@@ -1,0 +1,25 @@
+{
+    "name": "thomasuebel/webmention-sender",
+    "description": "CLI tool that reads an RSS feed and sends webmentions for outgoing links.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "WebmentionSender\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WebmentionSender\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

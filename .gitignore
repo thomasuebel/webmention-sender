@@ -1,0 +1,5 @@
+config.php
+webmentions-sent.json
+vendor/
+.phpunit.result.cache
+CLAUDE.md
