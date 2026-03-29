@@ -10,6 +10,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WebmentionSender\Config;
 use WebmentionSender\Contract\StateInterface;
+use WebmentionSender\Exception\StateException;
 use WebmentionSender\FeedParser;
 use WebmentionSender\LinkExtractor;
 use WebmentionSender\Logger;
@@ -100,6 +101,21 @@ final class WebmentionRunnerTest extends TestCase
         $this->dispatcher->expects($this->exactly(2))->method('dispatch');
 
         $this->runner(lookbackDays: null)->run();
+    }
+
+    #[Test]
+    public function itDispatchesEvenWhenStateIsNotWritable(): void
+    {
+        $state = $this->createMock(StateInterface::class);
+        $state->method('assertWritable')->willThrowException(new StateException('disk full'));
+
+        $this->parser->method('parse')->willReturn([new Post('https://source.com/post/', 'Post')]);
+        $this->linkExtractor->method('extract')->willReturn(['https://target.com/page']);
+
+        // Current behaviour: runner never calls assertWritable(), so dispatch proceeds regardless
+        $this->dispatcher->expects($this->once())->method('dispatch');
+
+        $this->runner(state: $state)->run();
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
