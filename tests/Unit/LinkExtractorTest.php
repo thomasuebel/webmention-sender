@@ -120,7 +120,7 @@ final class LinkExtractorTest extends TestCase
     }
 
     #[Test]
-    public function itDoesNotExtractLinkRelInReplyToElements(): void
+    public function itExtractsLinkRelInReplyToElements(): void
     {
         $html = <<<HTML
             <html><head>
@@ -132,7 +132,59 @@ final class LinkExtractorTest extends TestCase
 
         $links = (new LinkExtractor($http))->extract('https://example.com/blog/post/');
 
+        $this->assertSame(['https://other.com/page'], $links);
+    }
+
+    #[Test]
+    public function itExtractsLinkRelInReplyToWithUnquotedAttributes(): void
+    {
+        // Hugo themes often emit <link> elements with unquoted attributes
+        $html = <<<HTML
+            <html><head>
+                <link rel=in-reply-to href=https://other.com/page>
+            </head><body></body></html>
+            HTML;
+
+        $http = $this->mockGet('https://example.com/blog/post/', $html);
+
+        $links = (new LinkExtractor($http))->extract('https://example.com/blog/post/');
+
+        $this->assertSame(['https://other.com/page'], $links);
+    }
+
+    #[Test]
+    public function itIgnoresLinkRelInReplyToForSelfLinks(): void
+    {
+        $html = <<<HTML
+            <html><head>
+                <link rel="in-reply-to" href="https://example.com/other-post">
+            </head><body></body></html>
+            HTML;
+
+        $http = $this->mockGet('https://example.com/blog/post/', $html);
+
+        $links = (new LinkExtractor($http))->extract('https://example.com/blog/post/');
+
         $this->assertSame([], $links);
+    }
+
+    #[Test]
+    public function itDeduplicatesLinkRelInReplyToWithAnchorLinks(): void
+    {
+        $html = <<<HTML
+            <html><head>
+                <link rel="in-reply-to" href="https://other.com/page">
+            </head><body>
+                <a href="https://other.com/page">same link in body</a>
+            </body></html>
+            HTML;
+
+        $http = $this->mockGet('https://example.com/blog/post/', $html);
+
+        $links = (new LinkExtractor($http))->extract('https://example.com/blog/post/');
+
+        $this->assertCount(1, $links);
+        $this->assertSame('https://other.com/page', $links[0]);
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
