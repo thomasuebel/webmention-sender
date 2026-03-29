@@ -24,6 +24,14 @@ class StateManager implements StateInterface
         $this->load();
     }
 
+    /**
+     * @throws StateException
+     */
+    public function assertWritable(): void
+    {
+        $this->persist();
+    }
+
     public function hasBeenSent(string $source, string $target): bool
     {
         return isset($this->state[$source][$target]);
@@ -67,7 +75,7 @@ class StateManager implements StateInterface
      */
     private function persist(): void
     {
-        $result = file_put_contents(
+        $result = @file_put_contents(
             $this->stateFile,
             json_encode($this->state, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
         );
