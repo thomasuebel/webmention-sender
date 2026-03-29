@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## Unreleased
+
+### Fixed
+- `LinkExtractor` now extracts `<link rel="in-reply-to">` elements from `<head>` in addition to `<a>` elements
+- `LinkExtractor` pre-processes HTML to quote unquoted `href` attribute values before DOM parsing, guarding against libxml2 truncating `href=https://...` at the colon on some versions
+
 ## v1.0.1 - 2026-03-28
 
 ### Added

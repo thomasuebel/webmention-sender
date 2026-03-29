@@ -3,7 +3,7 @@
 [![CI](https://github.com/thomasuebel/webmention-sender/actions/workflows/ci.yml/badge.svg)](https://github.com/thomasuebel/webmention-sender/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/thomasuebel/webmention-sender/graph/badge.svg)](https://codecov.io/gh/thomasuebel/webmention-sender)
 
-A CLI PHP script that reads an RSS feed, fetches each post page to discover outgoing links, and sends [webmentions](https://www.w3.org/TR/webmention/) to any target that supports them. A state file prevents re-sending on subsequent runs.
+A CLI PHP script that reads an RSS feed, fetches each post page to discover outgoing links, and sends [webmentions](https://www.w3.org/TR/webmention/) to any target that supports them. Links are discovered from `<a>` elements and `<link rel="in-reply-to">` elements. A state file prevents re-sending on subsequent runs.
 
 ## Installation
 
