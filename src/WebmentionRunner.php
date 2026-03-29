@@ -29,6 +29,13 @@ class WebmentionRunner
     {
         if ($this->config->dryRun) {
             $this->logger->info('Dry-run mode enabled — no webmentions will be sent.');
+        } else {
+            try {
+                $this->state->assertWritable();
+            } catch (StateException $e) {
+                $this->logger->error('State file is not writable, aborting to prevent duplicate sends: ' . $e->getMessage());
+                return;
+            }
         }
 
         $this->logger->info('Fetching feed: ' . $this->config->feedUrl);
