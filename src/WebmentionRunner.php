@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace WebmentionSender;
 
 use DateTimeImmutable;
+use WebmentionSender\Contract\StateInterface;
 use WebmentionSender\Exception\FeedParseException;
 use WebmentionSender\Exception\HttpException;
+use WebmentionSender\Exception\StateException;
 
 class WebmentionRunner
 {
@@ -15,6 +17,7 @@ class WebmentionRunner
         private readonly FeedParser $parser,
         private readonly LinkExtractor $linkExtractor,
         private readonly WebmentionDispatcher $dispatcher,
+        private readonly StateInterface $state,
         private readonly Logger $logger,
     ) {}
 

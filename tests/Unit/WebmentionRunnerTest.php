@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WebmentionSender\Config;
+use WebmentionSender\Contract\StateInterface;
 use WebmentionSender\FeedParser;
 use WebmentionSender\LinkExtractor;
 use WebmentionSender\Logger;
@@ -103,7 +104,7 @@ final class WebmentionRunnerTest extends TestCase
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
-    private function runner(?int $lookbackDays = null): WebmentionRunner
+    private function runner(?int $lookbackDays = null, ?StateInterface $state = null): WebmentionRunner
     {
         return new WebmentionRunner(
             new Config(
@@ -114,6 +115,7 @@ final class WebmentionRunnerTest extends TestCase
             $this->parser,
             $this->linkExtractor,
             $this->dispatcher,
+            $state ?? $this->createMock(StateInterface::class),
             $this->logger,
         );
     }

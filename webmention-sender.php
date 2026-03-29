@@ -76,7 +76,7 @@ $parser     = new FeedParser($http);
 $extractor  = new LinkExtractor($http);
 
 try {
-    (new WebmentionRunner($config, $parser, $extractor, $dispatcher, $logger))->run();
+    (new WebmentionRunner($config, $parser, $extractor, $dispatcher, $state, $logger))->run();
 } catch (FeedParseException | HttpException $e) {
     $logger->error('Failed to fetch or parse feed: ' . $e->getMessage());
     exit(1);
