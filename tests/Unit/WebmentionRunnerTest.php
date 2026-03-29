@@ -104,7 +104,7 @@ final class WebmentionRunnerTest extends TestCase
     }
 
     #[Test]
-    public function itDispatchesEvenWhenStateIsNotWritable(): void
+    public function itHaltsBeforeDispatchingWhenStateIsNotWritable(): void
     {
         $state = $this->createMock(StateInterface::class);
         $state->method('assertWritable')->willThrowException(new StateException('disk full'));
@@ -112,8 +112,7 @@ final class WebmentionRunnerTest extends TestCase
         $this->parser->method('parse')->willReturn([new Post('https://source.com/post/', 'Post')]);
         $this->linkExtractor->method('extract')->willReturn(['https://target.com/page']);
 
-        // Current behaviour: runner never calls assertWritable(), so dispatch proceeds regardless
-        $this->dispatcher->expects($this->once())->method('dispatch');
+        $this->dispatcher->expects($this->never())->method('dispatch');
 
         $this->runner(state: $state)->run();
     }
