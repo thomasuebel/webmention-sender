@@ -99,6 +99,42 @@ final class LinkExtractorTest extends TestCase
         $this->assertSame([], $links);
     }
 
+    #[Test]
+    public function itExtractsLinksFromUnquotedHrefAttributes(): void
+    {
+        // Some Hugo microformat templates emit <a> elements with unquoted href
+        // attributes, e.g. <a class=u-in-reply-to href=https://other.com/page hidden>.
+        // Confirm DOMDocument handles this correctly so we have a regression guard.
+        $html = <<<HTML
+            <html><body>
+                <a class=u-url href=https://example.com/blog/post/ hidden></a>
+                <a class=u-in-reply-to rel=in-reply-to href=https://other.com/page hidden></a>
+            </body></html>
+            HTML;
+
+        $http = $this->mockGet('https://example.com/blog/post/', $html);
+
+        $links = (new LinkExtractor($http))->extract('https://example.com/blog/post/');
+
+        $this->assertSame(['https://other.com/page'], $links);
+    }
+
+    #[Test]
+    public function itDoesNotExtractLinkRelInReplyToElements(): void
+    {
+        $html = <<<HTML
+            <html><head>
+                <link rel="in-reply-to" href="https://other.com/page">
+            </head><body></body></html>
+            HTML;
+
+        $http = $this->mockGet('https://example.com/blog/post/', $html);
+
+        $links = (new LinkExtractor($http))->extract('https://example.com/blog/post/');
+
+        $this->assertSame([], $links);
+    }
+
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     private function mockGet(string $url, string $body): HttpClientInterface
