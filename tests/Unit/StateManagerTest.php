@@ -83,6 +83,26 @@ final class StateManagerTest extends TestCase
     }
 
     #[Test]
+    public function itDoesNotThrowOnAssertWritableWhenPathIsWritable(): void
+    {
+        $manager = new StateManager($this->stateFile);
+        $manager->assertWritable();
+
+        $this->assertFileExists($this->stateFile);
+    }
+
+    #[Test]
+    public function itThrowsOnAssertWritableWhenPathIsNotWritable(): void
+    {
+        $manager = new StateManager('/nonexistent/path/state.json');
+
+        $this->expectException(StateException::class);
+        $this->expectExceptionMessage('Could not write state file');
+
+        $manager->assertWritable();
+    }
+
+    #[Test]
     public function itThrowsOnInvalidJsonStateFile(): void
     {
         file_put_contents($this->stateFile, 'not valid json {{{');
