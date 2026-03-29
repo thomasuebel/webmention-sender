@@ -187,6 +187,38 @@ final class LinkExtractorTest extends TestCase
         $this->assertSame('https://other.com/page', $links[0]);
     }
 
+    #[Test]
+    public function itIgnoresLinkElementsWithOtherRelValues(): void
+    {
+        $html = <<<HTML
+            <html><head>
+                <link rel="stylesheet" href="https://other.com/style.css">
+            </head><body></body></html>
+            HTML;
+
+        $http = $this->mockGet('https://example.com/blog/post/', $html);
+
+        $links = (new LinkExtractor($http))->extract('https://example.com/blog/post/');
+
+        $this->assertSame([], $links);
+    }
+
+    #[Test]
+    public function itIgnoresLinkRelInReplyToWithNonHttpHref(): void
+    {
+        $html = <<<HTML
+            <html><head>
+                <link rel="in-reply-to" href="/relative/path">
+            </head><body></body></html>
+            HTML;
+
+        $http = $this->mockGet('https://example.com/blog/post/', $html);
+
+        $links = (new LinkExtractor($http))->extract('https://example.com/blog/post/');
+
+        $this->assertSame([], $links);
+    }
+
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     private function mockGet(string $url, string $body): HttpClientInterface
